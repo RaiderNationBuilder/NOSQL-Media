@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Thought = require('../../models/Thought');
+const User = require('../../models/User');
 
 // /api/thoughts
 // GET to get all thoughts
@@ -20,24 +21,44 @@ router.get('/', async (req, res) => {
 //   "userId": "5edff358a0fcb779aa7b118b"
 // }
 router.post('/:userId', async (req, res) => {
-    // SAVE IT O THE DB using the user model!
-    const newThought = await Thought.findOneAndUpdate({ thoughtText: req.body.thoughtText, username: req.body.username, userId: req.body.userId},
-        { $push: { newThought: body } });   
-        
-    res.json(newThought);
+    // SAVE IT TO THE DB using the user model!
+    try {
+        const newThought = await Thought.create({ thoughtText: req.body.thoughtText })
+        const updatedUser = await User.findOneAndUpdate({ _id: req.params.userId },
+            { $push: { thought: newThought._id } });
+
+        res.json(newThought);
+    } catch (err) {
+        console.log(err);
+    }
 
 });
 
-
-
-module.exports = router;
-
 // PUT to update a thought by its _id
+router.put('/:thoughtId', async ({ params, body }, res) => {
+    // SAVE IT TO THE DB using the user model!
+    try {
+        const updatedThought = await Thought.findOneAndUpdate({ _id: params.userId }, body, { new: true, runValidators: true });
+        res.json(updatedThought);
+    } catch (err) {
+        console.log(err);
+    }
+});
+
 
 // DELETE to remove a thought by its _id
+router.delete('/:thoughtId', async (req, res) => {
+    try {
+        const deletedThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId });
+        res.json(deletedThought);
+    } catch (err) {
+        console.log(err);
+    }
+});
 
 // /api/thoughts/:thoughtId/reactions
 
 // POST to create a reaction stored in a single thought's reactions array field
 
 // DELETE to pull and remove a reaction by the reaction's reactionId value
+module.exports = router;
