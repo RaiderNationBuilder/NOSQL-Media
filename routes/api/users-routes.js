@@ -45,19 +45,19 @@ router.get('/', async (req, res) => {
 
 // /api/users/:userId/friends/:friendId
 // GET a single user by its _id and populated thought and friend data
-router.get({ params }, res) {
+router.get('/:userId', async ({ params }, res) => {
     const newUser = await User.findOne({ _id: params.id })
         .populate({
             path: 'friends',
             select: '-__v'
         })
         .select('-__v')
-        res.json(newUser)
+    res.json(newUser)
         .catch(err => {
             console.log(err);
             res.sendStatus(400);
         });
-};
+});
 
 // POST to add a new friend to a user's friend list
 

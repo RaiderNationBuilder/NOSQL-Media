@@ -19,12 +19,18 @@ router.get('/', async (req, res) => {
 //   "username": "lernantino",
 //   "userId": "5edff358a0fcb779aa7b118b"
 // }
-router.post('/userId:', async (req, res) => {
+router.post('/:userId', async (req, res) => {
     // SAVE IT O THE DB using the user model!
-    const newThought = await Thought.create({ thoughtText: req.body.thoughtText, username: req.body.username, userId: req.body.userId});
+    const newThought = await Thought.findOneAndUpdate({ thoughtText: req.body.thoughtText, username: req.body.username, userId: req.body.userId},
+        { $push: { newThought: body } });   
+        
     res.json(newThought);
 
 });
+
+
+
+module.exports = router;
 
 // PUT to update a thought by its _id
 
