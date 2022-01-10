@@ -52,7 +52,7 @@ router.get({ params }, res) {
             select: '-__v'
         })
         .select('-__v')
-        .then(newUser => res.json(newUser))
+        res.json(newUser)
         .catch(err => {
             console.log(err);
             res.sendStatus(400);
