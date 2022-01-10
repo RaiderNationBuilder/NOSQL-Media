@@ -28,12 +28,12 @@ router.post('/', async (req,res) => {
 
 });
 
+// /api/users
 router.get('/', async (req,res) => {
-    // SAVE IT O THE DB using the user model!
-   const newUser = await User.create({ username: req.body.username, email:req.body.email});
+    // get all users
+   const newUser = await User.find({});
 
    res.json(newUser);
-
 });
 
 
