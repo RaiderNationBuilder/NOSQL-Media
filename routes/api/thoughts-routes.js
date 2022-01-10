@@ -57,6 +57,34 @@ router.delete('/:thoughtId', async (req, res) => {
 });
 
 // /api/thoughts/:thoughtId/reactions
+router.post('/:thoughtId/reactions', async (req, res) => {
+    // SAVE IT TO THE DB using the user model!
+    try {
+        const newReaction = await Thought.create({ reacton: req.body.reaction })
+        const updatedThought = await User.findOneAndUpdate({ _id: req.params.thoughtId },
+            { $push: { reaction: newReaction.body } });
+
+        res.json(newReaction);
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+// addReaction({ params, body }, res) {
+//     Thought.findOneAndUpdate(
+//         { _id: params.id },
+//         { $push: { reactions: body} },
+//         { new: true }
+//     )
+//     .then(dbThoughtData => {
+//         if (!dbThoughtData) {
+//             res.status(404).json({ message: 'No thought found with this id!' });
+//             return;
+//         }
+//         res.json(dbThoughtData);
+//     })
+//     .catch(err => res.json(err));
+// }
 
 // POST to create a reaction stored in a single thought's reactions array field
 
