@@ -1,6 +1,6 @@
 ## NOSQL-Media
  
-## Desription
+## Description
 The user story:
 
 AS A social media startup
@@ -31,3 +31,10 @@ Here's a link to a walkthrough video of me testing out the API:
 
 ## Screenshot
 ![alt text](screenshot.jpg)
+
+## Tools Used
+Here's a list of the tools that were used to build this API:
+
+Mongoose
+Express
+Insomnia
