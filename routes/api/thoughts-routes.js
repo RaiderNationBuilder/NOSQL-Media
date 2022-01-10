@@ -1,17 +1,31 @@
-// /api/thoughts
+const router = require('express').Router();
+const Thought = require('../../models/Thought');
 
+// /api/thoughts
 // GET to get all thoughts
+router.get('/', async (req, res) => {
+    // get all users
+    const newThought = await Thought.find({});
+
+    res.json(newThought);
+});
 
 // GET to get a single thought by its _id
 
 // POST to create a new thought (don't forget to push the created thought's _id to the associated user's thoughts array field)
-
 // // example data
 // {
 //   "thoughtText": "Here's a cool thought...",
 //   "username": "lernantino",
 //   "userId": "5edff358a0fcb779aa7b118b"
 // }
+router.post('/userId:', async (req, res) => {
+    // SAVE IT O THE DB using the user model!
+    const newThought = await Thought.create({ thoughtText: req.body.thoughtText, username: req.body.username, userId: req.body.userId});
+    res.json(newThought);
+
+});
+
 // PUT to update a thought by its _id
 
 // DELETE to remove a thought by its _id
