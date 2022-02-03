@@ -37,8 +37,11 @@ router.post('/:userId', async (req, res) => {
 // PUT to update a thought by its _id
 router.put('/:thoughtId', async ({ params, body }, res) => {
     // SAVE IT TO THE DB using the user model!
+    console.log('we r in the tought update route!!', params, body)
+
     try {
-        const updatedThought = await Thought.findOneAndUpdate({ _id: params.userId }, body, { new: true, runValidators: true });
+        const updatedThought = await Thought.findOneAndUpdate({ _id: params.thoughtId }, body, { new: true, runValidators: true });
+
         res.json(updatedThought);
     } catch (err) {
         console.log(err);
@@ -49,20 +52,28 @@ router.put('/:thoughtId', async ({ params, body }, res) => {
 // DELETE to remove a thought by its _id
 router.delete('/:thoughtId', async (req, res) => {
     try {
-        const deletedThought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId });
+        const deletedThought = await Thought.findByIdAndDelete({ _id: req.params.thoughtId });
         res.json(deletedThought);
     } catch (err) {
         console.log(err);
     }
 });
 
+// POST to create a reaction stored in a single thought's reactions array field
 // /api/thoughts/:thoughtId/reactions
 router.post('/:thoughtId/reactions', async (req, res) => {
     // SAVE IT TO THE DB using the user model!
+    console.log(req.body, req.params)
     try {
-        const newReaction = await Thought.create({ reacton: req.body.reaction })
-        const updatedThought = await User.findOneAndUpdate({ _id: req.params.thoughtId },
-            { $push: { reaction: newReaction.body } });
+        // await Thought.create({ reacton: req.body.reaction })
+        // const updatedThought = await User.findOneAndUpdate({ _id: req.params.thoughtId },
+        //     { $push: { reaction: newReaction.body } });
+        const newReaction = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $push: { reactions: req.body } },
+            { new: true }
+        )
+        console.log(newReaction)
 
         res.json(newReaction);
     } catch (err) {
@@ -70,23 +81,17 @@ router.post('/:thoughtId/reactions', async (req, res) => {
     }
 
 });
-// addReaction({ params, body }, res) {
-//     Thought.findOneAndUpdate(
-//         { _id: params.id },
-//         { $push: { reactions: body} },
-//         { new: true }
-//     )
-//     .then(dbThoughtData => {
-//         if (!dbThoughtData) {
-//             res.status(404).json({ message: 'No thought found with this id!' });
-//             return;
-//         }
-//         res.json(dbThoughtData);
-//     })
-//     .catch(err => res.json(err));
-// }
-
-// POST to create a reaction stored in a single thought's reactions array field
 
 // DELETE to pull and remove a reaction by the reaction's reactionId value
+router.delete('/:thoughtId/reactions', async (req, res) => {
+    const deletedReaction = await Thought.updateOne(
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: {id: req.body.reaction_id} } }
+    )
+    console.log('deleted!', deletedReaction)
+    res.json(deletedReaction);
+
+})
+
+
 module.exports = router;

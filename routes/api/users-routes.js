@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const User = require('../../models/User');
-// GET a single user by its _id and populated thought and friend data
+// GET a single user by its _id and populated User and friend data
 
 // POST a new user:
 
@@ -60,6 +60,23 @@ router.get('/:userId', async ({ params }, res) => {
 });
 
 // POST to add a new friend to a user's friend list
+router.post('/:userId/friends/', async ({params, body}, res) => {
+    try {
+        // await Thought.create({ reacton: req.body.reaction })
+        // const updatedThought = await User.findOneAndUpdate({ _id: req.params.thoughtId },
+        //     { $push: { reaction: newReaction.body } });
+        const newReaction = await User.findOneAndUpdate(
+            { _id: params.userId },
+            { $push: { friends: body.friendId } },
+            { new: true }
+        )
+        console.log(newReaction)
+
+        res.json(newReaction);
+    } catch (err) {
+        console.log(err);
+    }
+})
 
 // DELETE to remove a friend from a user's friend list
 
